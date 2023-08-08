@@ -19,7 +19,7 @@
 #include "pms7003.h"
 #include "i2c-lcd.h"
 
-#define PMS_UART_NUM UART_NUM_1
+#define PMS_UART_NUM UART_NUM_2
 #define PMS_TXD_PIN (GPIO_NUM_17)
 #define PMS_RXD_PIN (GPIO_NUM_16)
 
@@ -36,7 +36,7 @@
 
 #define WEB_SERVER "api.thingspeak.com"
 #define WEB_PORT "80"
-#define THINGSPEAK_API_KEY "J5YNH9S26MFZGY09"
+#define THINGSPEAK_API_KEY "G6KH2LX4SOVH2WUE"
 
 static const char *TAG = "example";
 
@@ -93,6 +93,13 @@ static void send_to_thingspeak(uint32_t pm1_0, uint32_t pm2_5, uint32_t pm10)
 
     close(s);
 }
+static void lcd_init_cus(char line1[], char line2[]){
+    lcd_put_cur(0, 0);
+    lcd_send_string(line1);
+    lcd_put_cur(1, 0);
+    lcd_send_string(line2);
+}
+
 
 void app_main(void)
 {
@@ -145,11 +152,11 @@ void app_main(void)
             char line1[17], line2[17];
             snprintf(line1, sizeof(line1), "PM1.0: %d ug/m3", pm1_0);
             snprintf(line2, sizeof(line2), "PM2.5: %d ug/m3", pm2_5);
-            lcd_put_cur(0, 0);
-            lcd_send_string(line1);
-            lcd_put_cur(1, 0);
-            lcd_send_string(line2);
-            
+            // lcd_put_cur(0, 0);
+            // lcd_send_string(line1);
+            // lcd_put_cur(1, 0);
+            // lcd_send_string(line2);
+            lcd_init_cus(line1, line2);
             send_to_thingspeak(pm1_0, pm2_5, pm10);
             ESP_LOGI(TAG, "Entering deep sleep for 10 seconds...");
             
@@ -158,6 +165,7 @@ void app_main(void)
         } else {
             ESP_LOGE(TAG, "Không đọc được dữ liệu từ PMS7003");
         }
-        // vTaskDelay(3000 / portTICK_PERIOD_MS);
+         //vTaskDelay(3000 / portTICK_PERIOD_MS);
+         
     }
 }
