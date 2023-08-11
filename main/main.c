@@ -36,7 +36,7 @@
 
 #define WEB_SERVER "api.thingspeak.com"
 #define WEB_PORT "80"
-#define THINGSPEAK_API_KEY "G6KH2LX4SOVH2WUE"
+#define THINGSPEAK_API_KEY "X6MYOELSXKZIGT15"
 
 static const char *TAG = "example";
 
@@ -147,25 +147,24 @@ void app_main(void)
 
       while (1) {
         if (pms7003_readData(indoor, &pm1_0, &pm2_5, &pm10) == ESP_OK) {
-            ESP_LOGI(TAG, "PM1.0: %d ug/m3, PM2.5: %d ug/m3, PM10: %d ug/m3", pm1_0, pm2_5, pm10);
-            
+            ESP_LOGI(TAG, "PM1.0: %d ug/m3, PM2.5: %d ug/m3, PM10: %d ug/m3", pm1_0, pm2_5, pm10);   
             char line1[17], line2[17];
             snprintf(line1, sizeof(line1), "PM1.0: %d ug/m3", pm1_0);
             snprintf(line2, sizeof(line2), "PM2.5: %d ug/m3", pm2_5);
-            // lcd_put_cur(0, 0);
-            // lcd_send_string(line1);
-            // lcd_put_cur(1, 0);
-            // lcd_send_string(line2);
             lcd_init_cus(line1, line2);
             send_to_thingspeak(pm1_0, pm2_5, pm10);
+             // Chế độ sleep trong 10 giây (10 giây = 10000 ms)
             ESP_LOGI(TAG, "Entering deep sleep for 10 seconds...");
-            
-            // Chế độ deep sleep trong 10 giây (10 giây = 10000 ms)
             esp_deep_sleep(10000000);
+            // ESP_LOGI(TAG, "Entering light sleep for 10 seconds...");
+           
+            // esp_sleep_enable_timer_wakeup(10000000);
+            // esp_light_sleep_start();
+            
         } else {
             ESP_LOGE(TAG, "Không đọc được dữ liệu từ PMS7003");
         }
-         //vTaskDelay(3000 / portTICK_PERIOD_MS);
+        //vTaskDelay(3000 / portTICK_PERIOD_MS);
          
     }
 }
